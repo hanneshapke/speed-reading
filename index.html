@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tachyon — Train Your Eyes to Read Faster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0e1a;
+    --paper:#f3eee4;
+    --pulse:#ff4d2e;
+    --beam:#3d5afe;
+    --dim:#6b6557;
+    --line:rgba(10,14,26,.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Space Grotesk",sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--pulse);color:var(--paper)}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 32px;
+    mix-blend-mode:multiply;
+  }
+  .logo{
+    font-family:"Space Mono",monospace;font-weight:700;
+    font-size:15px;letter-spacing:.25em;text-transform:uppercase;
+    display:flex;align-items:center;gap:8px;
+  }
+  .logo .dot{width:9px;height:9px;background:var(--pulse);border-radius:50%;
+    animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .navlinks{display:flex;gap:28px;font-size:13px;font-weight:500;
+    text-transform:uppercase;letter-spacing:.08em}
+  .navlinks a{color:var(--ink);text-decoration:none;opacity:.6;transition:opacity .2s}
+  .navlinks a:hover{opacity:1}
+  @media(max-width:640px){.navlinks{display:none}}
+
+  /* ---------- hero ---------- */
+  header{
+    min-height:100vh;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    padding:120px 24px 80px;text-align:center;position:relative;
+  }
+  .eyebrow{
+    font-family:"Space Mono",monospace;font-size:12px;
+    letter-spacing:.4em;text-transform:uppercase;color:var(--dim);
+    margin-bottom:28px;
+  }
+  /* RSVP hero word */
+  .rsvp{
+    height:clamp(90px,16vw,180px);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;width:100%;
+  }
+  .rsvp .focus-line{
+    position:absolute;top:0;bottom:0;left:50%;width:2px;
+    background:var(--pulse);opacity:.35;
+  }
+  #heroWord{
+    font-family:"Fraunces",serif;font-weight:900;
+    font-size:clamp(52px,11vw,140px);line-height:1;
+    font-variation-settings:"opsz" 144;
+    position:relative;white-space:nowrap;
+  }
+  #heroWord .pivot{color:var(--pulse)}
+  .subline{
+    max-width:560px;margin:36px auto 0;font-size:clamp(16px,2.2vw,20px);
+    color:var(--dim);line-height:1.6;
+  }
+  .subline b{color:var(--ink);font-weight:700}
+  .cta-row{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap;justify-content:center}
+  .btn{
+    font-family:"Space Grotesk";font-weight:700;font-size:15px;
+    padding:15px 30px;border:2px solid var(--ink);background:var(--ink);
+    color:var(--paper);text-decoration:none;cursor:pointer;
+    transition:transform .15s,box-shadow .15s;letter-spacing:.02em;
+  }
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--pulse)}
+  .scroll-hint{
+    position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+    font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.3em;
+    text-transform:uppercase;color:var(--dim);
+    animation:bob 1.8s ease-in-out infinite;
+  }
+  @keyframes bob{50%{transform:translate(-50%,8px)}}
+
+  /* ---------- section frame ---------- */
+  section{padding:100px 24px;max-width:1100px;margin:0 auto}
+  .sec-head{margin-bottom:48px;max-width:640px}
+  .sec-num{font-family:"Space Mono",monospace;font-size:13px;color:var(--pulse);
+    letter-spacing:.2em;display:block;margin-bottom:14px}
+  .sec-title{font-family:"Fraunces",serif;font-weight:600;
+    font-size:clamp(30px,5vw,52px);line-height:1.05;letter-spacing:-.02em}
+  .sec-desc{margin-top:18px;font-size:17px;color:var(--dim);line-height:1.65;max-width:560px}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- technique: subvocalization / fixation ---------- */
+  .demo-card{
+    border:2px solid var(--ink);background:#fbf8f1;padding:36px 32px;
+    position:relative;
+  }
+  .demo-label{font-family:"Space Mono",monospace;font-size:11px;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:24px}
+
+  /* fixation demo */
+  .fix-text{font-family:"Fraunces",serif;font-size:clamp(20px,3.6vw,30px);
+    line-height:2;letter-spacing:.01em}
+  .fix-text span{transition:background .3s,color .3s;padding:1px 0}
+  .chunk-bar{display:flex;gap:10px;margin-top:28px;align-items:center;flex-wrap:wrap}
+  .chunk-bar button{
+    font-family:"Space Mono",monospace;font-size:12px;padding:9px 16px;
+    border:1.5px solid var(--ink);background:transparent;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.08em;transition:.15s;
+  }
+  .chunk-bar button.active{background:var(--ink);color:var(--paper)}
+  .chunk-note{font-size:13px;color:var(--dim);margin-left:auto}
+
+  /* ---------- the trainer ---------- */
+  .trainer-wrap{
+    background:var(--ink);color:var(--paper);padding:0;
+    position:relative;overflow:hidden;
+  }
+  .trainer-inner{padding:64px 32px;max-width:1100px;margin:0 auto}
+  .trainer-wrap .sec-title{color:var(--paper)}
+  .trainer-wrap .sec-desc{color:#9b958a}
+  .stage{
+    background:#0d1322;border:1px solid rgba(255,255,255,.1);
+    height:clamp(160px,26vw,240px);margin-top:8px;
+    display:flex;align-items:center;justify-content:center;position:relative;
+  }
+  .stage .focus-line{position:absolute;left:50%;top:18%;bottom:18%;width:2px;
+    background:var(--pulse);opacity:.4}
+  .stage .top-tick,.stage .bot-tick{position:absolute;left:50%;transform:translateX(-50%);
+    width:14px;height:14px;border:2px solid var(--pulse);opacity:.5}
+  .stage .top-tick{top:14%;border-bottom:none;border-left:none;border-right:none;
+    width:24px;height:8px}
+  #word{
+    font-family:"Fraunces",serif;font-weight:600;font-size:clamp(34px,7vw,72px);
+    letter-spacing:-.01em;white-space:nowrap;
+  }
+  #word .pivot{color:var(--pulse)}
+  #word .pre{opacity:.92}#word .post{opacity:.92}
+  .idle{font-family:"Space Mono",monospace;font-size:15px;color:#5a6478;
+    letter-spacing:.15em;text-transform:uppercase}
+
+  .controls{display:flex;gap:14px;align-items:center;margin-top:24px;flex-wrap:wrap}
+  .controls .btn{border-color:var(--paper);background:var(--paper);color:var(--ink);font-size:14px}
+  .controls .btn:hover{box-shadow:6px 6px 0 var(--beam)}
+  .controls .btn.ghost{background:transparent;color:var(--paper)}
+  .wpm-display{font-family:"Fraunces",serif;font-weight:900;font-size:42px;line-height:1}
+  .wpm-display small{font-family:"Space Mono",monospace;font-size:12px;
+    color:#9b958a;display:block;letter-spacing:.2em;font-weight:400}
+  .slider-row{display:flex;align-items:center;gap:16px;margin-top:24px;flex-wrap:wrap}
+  .slider-row label{font-family:"Space Mono",monospace;font-size:12px;
+    color:#9b958a;letter-spacing:.1em;text-transform:uppercase;min-width:70px}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;height:3px;background:#3a4258;
+    flex:1;min-width:160px;border-radius:2px;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+    background:var(--pulse);cursor:pointer;border:3px solid var(--ink);
+  }
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;
+    background:var(--pulse);cursor:pointer;border:3px solid var(--ink)}
+  .progress{height:3px;background:#3a4258;margin-top:24px;position:relative}
+  .progress .bar{height:100%;background:var(--pulse);width:0%;transition:width .1s linear}
+  textarea{
+    width:100%;margin-top:24px;background:#0d1322;color:var(--paper);
+    border:1px solid rgba(255,255,255,.14);padding:14px;font-family:"Space Mono",monospace;
+    font-size:13px;line-height:1.7;resize:vertical;min-height:90px;
+  }
+  textarea:focus{outline:none;border-color:var(--pulse)}
+
+  /* ---------- pacer ---------- */
+  .pacer-text{
+    font-family:"Fraunces",serif;font-size:clamp(17px,2.6vw,22px);
+    line-height:2.1;position:relative;
+  }
+  .pacer-text .w{transition:color .12s}
+  .pacer-text .w.lit{color:var(--pulse);font-weight:600}
+  .pacer-text .w.read{opacity:.4}
+
+  /* ---------- gains / numbers ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+    border:2px solid var(--ink);background:var(--ink)}
+  @media(max-width:640px){.stat-grid{grid-template-columns:1fr}}
+  .stat{background:var(--paper);padding:32px 24px}
+  .stat .n{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(40px,7vw,64px);
+    line-height:1;font-variation-settings:"opsz" 144}
+  .stat .l{font-family:"Space Mono",monospace;font-size:12px;color:var(--dim);
+    text-transform:uppercase;letter-spacing:.12em;margin-top:10px}
+
+  /* ---------- steps ---------- */
+  .steps{display:grid;gap:2px;border:2px solid var(--ink);background:var(--ink)}
+  .step{background:var(--paper);padding:28px 30px;display:grid;
+    grid-template-columns:auto 1fr;gap:24px;align-items:start}
+  .step .k{font-family:"Space Mono",monospace;font-size:13px;color:var(--pulse);
+    font-weight:700;padding-top:4px}
+  .step h4{font-family:"Fraunces",serif;font-size:22px;font-weight:600;margin-bottom:6px}
+  .step p{color:var(--dim);font-size:15px;line-height:1.6}
+
+  footer{padding:60px 24px;text-align:center;border-top:2px solid var(--ink)}
+  footer .logo{justify-content:center;margin-bottom:14px}
+  footer p{font-size:13px;color:var(--dim);font-family:"Space Mono",monospace;letter-spacing:.05em}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span class="dot"></span>Tachyon</div>
+  <div class="navlinks">
+    <a href="#why">Why</a>
+    <a href="#fixation">Fixation</a>
+    <a href="#trainer">Trainer</a>
+    <a href="#pacer">Pacer</a>
+    <a href="#drills">Drills</a>
+  </div>
+</nav>
+
+<header>
+  <div class="eyebrow">Read with your eyes, not your inner voice</div>
+  <div class="rsvp">
+    <div class="focus-line"></div>
+    <div id="heroWord">Tachyon</div>
+  </div>
+  <p class="subline">The average reader moves at <b>238 words per minute</b> — about the speed they talk. Your eyes can go far faster. This is a workshop for teaching them how.</p>
+  <div class="cta-row">
+    <a href="#trainer" class="btn">Start the trainer</a>
+    <a href="#why" class="btn ghost">How it works</a>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</header>
+
+<!-- WHY -->
+<section id="why">
+  <div class="sec-head reveal">
+    <span class="sec-num">01 / THE BOTTLENECK</span>
+    <h2 class="sec-title">Three habits are slowing you down.</h2>
+    <p class="sec-desc">Slow reading isn't a lack of intelligence — it's a set of childhood habits your eyes never unlearned. Name them and you can train them out.</p>
+  </div>
+  <div class="steps reveal">
+    <div class="step"><div class="k">A</div><div><h4>Subvocalization</h4><p>Sounding out every word in your head. It chains your reading speed to your speaking speed — roughly 200 wpm. You don't need to "hear" a word to understand it.</p></div></div>
+    <div class="step"><div class="k">B</div><div><h4>Regression</h4><p>Flicking your eyes backward to re-read. Skilled readers regress less by trusting the first pass and letting comprehension catch up.</p></div></div>
+    <div class="step"><div class="k">C</div><div><h4>Narrow fixation</h4><p>Stopping on one word at a time. Each stop costs ~0.25s. Widen your span to grab 2–3 words per stop and you halve the number of stops.</p></div></div>
+  </div>
+</section>
+
+<!-- FIXATION -->
+<section id="fixation">
+  <div class="sec-head reveal">
+    <span class="sec-num">02 / WIDEN THE SPAN</span>
+    <h2 class="sec-title">See in chunks, not words.</h2>
+    <p class="sec-desc">Your eye doesn't read while moving — only during the brief stops between jumps. Fewer stops means faster reading. Watch the same sentence get grouped into bigger bites.</p>
+  </div>
+  <div class="demo-card reveal">
+    <div class="demo-label">Live fixation grouping</div>
+    <p class="fix-text" id="fixText"></p>
+    <div class="chunk-bar">
+      <button data-chunk="1" class="active">1 word</button>
+      <button data-chunk="2">2 words</button>
+      <button data-chunk="3">3 words</button>
+      <span class="chunk-note" id="chunkNote">8 stops per line</span>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINER (RSVP) -->
+<div class="trainer-wrap" id="trainer">
+  <div class="trainer-inner">
+    <div class="sec-head reveal" style="max-width:680px">
+      <span class="sec-num">03 / THE TRAINER</span>
+      <h2 class="sec-title">One word, one place, no eye movement.</h2>
+      <p class="sec-desc">This is RSVP — rapid serial visual presentation. Words flash at a fixed point so your eyes never travel. The red letter is the <em>optimal recognition point</em>; lock onto it and let the rest blur in. Paste your own text or use the sample.</p>
+    </div>
+    <div class="reveal">
+      <div class="stage">
+        <div class="top-tick"></div>
+        <div class="focus-line"></div>
+        <div id="word" class="idle">press start</div>
+      </div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="controls">
+        <button class="btn" id="startBtn">Start</button>
+        <button class="btn ghost" id="resetBtn">Reset</button>
+        <div style="margin-left:auto" class="wpm-display"><span id="wpmVal">350</span><small>WORDS / MIN</small></div>
+      </div>
+      <div class="slider-row">
+        <label for="wpm">Speed</label>
+        <input type="range" id="wpm" min="150" max="900" step="10" value="350">
+      </div>
+      <textarea id="src" spellcheck="false">Speed reading is a skill of attention. When you stop letting your inner voice narrate every word, your eyes are free to move at their natural pace. Trust the first glance. Resist the urge to look back. With practice, the page begins to open faster than you can speak, and meaning arrives all at once instead of word by word.</textarea>
+    </div>
+  </div>
+</div>
+
+<!-- PACER -->
+<section id="pacer">
+  <div class="sec-head reveal">
+    <span class="sec-num">04 / THE PACER</span>
+    <h2 class="sec-title">Let a guide pull your eyes along.</h2>
+    <p class="sec-desc">For real text on a page, a moving highlight does what your finger did as a child: it sets a rhythm and kills regression. Press play and follow the lit word — don't let it get ahead of you.</p>
+  </div>
+  <div class="demo-card reveal">
+    <div class="demo-label">Guided pacing · <span id="pacerWpm">300</span> wpm</div>
+    <p class="pacer-text" id="pacerText"></p>
+    <div class="chunk-bar" style="margin-top:26px">
+      <button id="pacerPlay">Play</button>
+      <button id="pacerReset">Reset</button>
+      <span class="chunk-note">follow the red word</span>
+    </div>
+  </div>
+</section>
+
+<!-- GAINS -->
+<section id="gains">
+  <div class="sec-head reveal">
+    <span class="sec-num">05 / THE MATH</span>
+    <h2 class="sec-title">Small habits, compounding returns.</h2>
+  </div>
+  <div class="stat-grid reveal">
+    <div class="stat"><div class="n" data-to="238">0</div><div class="l">avg reader · wpm</div></div>
+    <div class="stat"><div class="n" data-to="450">0</div><div class="l">trained reader · wpm</div></div>
+    <div class="stat"><div class="n" data-to="33">0</div><div class="l">hours saved / yr*</div></div>
+  </div>
+  <p class="sec-desc reveal" style="margin-top:20px;font-size:13px">*Based on ~1 hour of reading per day, moving from 238 to 450 wpm. Comprehension matters more than raw speed — train both.</p>
+</section>
+
+<!-- DRILLS -->
+<section id="drills">
+  <div class="sec-head reveal">
+    <span class="sec-num">06 / THE PRACTICE</span>
+    <h2 class="sec-title">A five-minute daily routine.</h2>
+  </div>
+  <div class="steps reveal">
+    <div class="step"><div class="k">01</div><div><h4>Warm up at speed</h4><p>Run the trainer 30% faster than feels comfortable for one minute. Don't aim to comprehend — just let your eyes get used to the pace.</p></div></div>
+    <div class="step"><div class="k">02</div><div><h4>Silence the voice</h4><p>Hum or count "1-2-3" softly while reading a paragraph. It occupies the speech loop so you can't subvocalize, forcing visual reading.</p></div></div>
+    <div class="step"><div class="k">03</div><div><h4>Pace a real page</h4><p>Use a pen or the pacer above to sweep under each line at a steady clip. Never let it stop, and never go back.</p></div></div>
+    <div class="step"><div class="k">04</div><div><h4>Drop back and check</h4><p>Read a fresh passage at a comfortable speed and write one sentence summarizing it. Comprehension is the real score.</p></div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo"><span class="dot"></span>Tachyon</div>
+  <p>A reading workshop. Train daily. Trust the glance.</p>
+</footer>
+
+<script>
+/* ---------- reveal on scroll ---------- */
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.18});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- hero RSVP loop ---------- */
+const heroWords=["Tachyon","read","without","your","inner","voice","Tachyon","let","the","words","arrive","faster"];
+const heroEl=document.getElementById('heroWord');
+let hi=0;
+function pivotize(w){
+  const i=Math.max(0,Math.floor((w.length-1)/2)-((w.length-1)%2===0?0:0));
+  const p=Math.floor((w.length-1)/2);
+  return `<span>${w.slice(0,p)}</span><span class="pivot">${w[p]||''}</span><span>${w.slice(p+1)}</span>`;
+}
+const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!reduce){
+  setInterval(()=>{hi=(hi+1)%heroWords.length;
+    heroEl.style.opacity=0;
+    setTimeout(()=>{heroEl.innerHTML=pivotize(heroWords[hi]);heroEl.style.transition='opacity .12s';heroEl.style.opacity=1;},90);
+  },950);
+}
+
+/* ---------- fixation grouping demo ---------- */
+const fixSentence="Your eyes do not read while they are moving across the line".split(" ");
+const fixText=document.getElementById('fixText');
+const chunkNote=document.getElementById('chunkNote');
+const groupColors=['rgba(61,90,254,.0)','rgba(255,77,46,.14)','rgba(61,90,254,.14)'];
+function renderFix(n){
+  fixText.innerHTML="";
+  let stops=0;
+  for(let i=0;i<fixSentence.length;i+=n){
+    const grp=fixSentence.slice(i,i+n).join(" ");
+    const s=document.createElement('span');
+    s.textContent=grp+" ";
+    if(n>1)s.style.background=groupColors[(stops%2)+1];
+    s.style.padding=n>1?'2px 4px':'';
+    s.style.borderRadius='3px';
+    fixText.appendChild(s);
+    stops++;
+  }
+  chunkNote.textContent=stops+(stops===1?" stop":" stops")+" per line";
+}
+renderFix(1);
+document.querySelectorAll('.chunk-bar [data-chunk]').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.chunk-bar [data-chunk]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    renderFix(+b.dataset.chunk);
+  };
+});
+
+/* ---------- RSVP trainer ---------- */
+const wordEl=document.getElementById('word');
+const bar=document.getElementById('bar');
+const startBtn=document.getElementById('startBtn');
+const resetBtn=document.getElementById('resetBtn');
+const wpm=document.getElementById('wpm');
+const wpmVal=document.getElementById('wpmVal');
+const src=document.getElementById('src');
+let tokens=[],idx=0,timer=null,running=false;
+
+function pivotWord(w){
+  const p=Math.max(0,Math.floor((w.replace(/[^\w]/g,'').length-1)/2));
+  // find pivot on raw string roughly center
+  const c=Math.floor((w.length-1)/2);
+  return `<span class="pre">${w.slice(0,c)}</span><span class="pivot">${w[c]||''}</span><span class="post">${w.slice(c+1)}</span>`;
+}
+function load(){tokens=src.value.trim().split(/\s+/).filter(Boolean);idx=0;}
+function delayFor(w){
+  const base=60000/(+wpm.value);
+  let d=base;
+  if(/[.,;:!?]$/.test(w))d*=1.9;      // pause on punctuation
+  if(w.length>8)d*=1.25;               // longer words linger
+  return d;
+}
+function step(){
+  if(idx>=tokens.length){stop();wordEl.classList.add('idle');wordEl.textContent="done";bar.style.width="100%";return;}
+  const w=tokens[idx];
+  wordEl.classList.remove('idle');
+  wordEl.innerHTML=pivotWord(w);
+  bar.style.width=((idx+1)/tokens.length*100)+"%";
+  idx++;
+  timer=setTimeout(step,delayFor(w));
+}
+function start(){
+  if(running)return;
+  if(!tokens.length||idx>=tokens.length)load();
+  running=true;startBtn.textContent="Pause";step();
+}
+function pause(){running=false;startBtn.textContent="Resume";clearTimeout(timer);}
+function stop(){running=false;startBtn.textContent="Start";clearTimeout(timer);}
+function reset(){stop();idx=0;bar.style.width="0%";wordEl.classList.add('idle');wordEl.textContent="press start";}
+startBtn.onclick=()=>{running?pause():start();};
+resetBtn.onclick=reset;
+wpm.oninput=()=>{wpmVal.textContent=wpm.value;};
+src.oninput=()=>{reset();};
+
+/* ---------- pacer ---------- */
+const pacerSentence="A moving guide sets the rhythm for your eyes and quietly removes the urge to drift backward over words you have already read".split(" ");
+const pacerText=document.getElementById('pacerText');
+const pacerPlay=document.getElementById('pacerPlay');
+const pacerReset=document.getElementById('pacerReset');
+let pIdx=0,pTimer=null,pRunning=false;
+const PACER_WPM=300;
+function buildPacer(){
+  pacerText.innerHTML="";
+  pacerSentence.forEach((w,i)=>{
+    const s=document.createElement('span');s.className='w';s.textContent=w+" ";s.dataset.i=i;
+    pacerText.appendChild(s);
+  });
+}
+function pacerStep(){
+  const spans=pacerText.querySelectorAll('.w');
+  spans.forEach((s,i)=>{s.classList.toggle('lit',i===pIdx);s.classList.toggle('read',i<pIdx);});
+  if(pIdx>=pacerSentence.length){pacerStop();spans.forEach(s=>s.classList.remove('lit'));return;}
+  pIdx++;
+  pTimer=setTimeout(pacerStep,60000/PACER_WPM*1.4);
+}
+function pacerStart(){if(pRunning)return;pRunning=true;pacerPlay.textContent="Pause";if(pIdx>=pacerSentence.length)pIdx=0;pacerStep();}
+function pacerPause(){pRunning=false;pacerPlay.textContent="Play";clearTimeout(pTimer);}
+function pacerStop(){pRunning=false;pacerPlay.textContent="Play";clearTimeout(pTimer);}
+function pacerResetFn(){pacerStop();pIdx=0;buildPacer();}
+pacerPlay.onclick=()=>{pRunning?pacerPause():pacerStart();};
+pacerReset.onclick=pacerResetFn;
+buildPacer();
+
+/* ---------- count-up stats ---------- */
+const statIO=new IntersectionObserver((es)=>{es.forEach(e=>{
+  if(e.isIntersecting){
+    const el=e.target;const to=+el.dataset.to;let cur=0;
+    const dur=1100,t0=performance.now();
+    function tick(now){const p=Math.min(1,(now-t0)/dur);
+      el.textContent=Math.round(to*(1-Math.pow(1-p,3)));
+      if(p<1)requestAnimationFrame(tick);}
+    requestAnimationFrame(tick);statIO.unobserve(el);
+  }})},{threshold:.6});
+document.querySelectorAll('.stat .n').forEach(el=>statIO.observe(el));
+</script>
+</body>
+</html>
